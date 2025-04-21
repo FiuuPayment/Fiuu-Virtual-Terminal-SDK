@@ -1,0 +1,92 @@
+# ========================
+# Flutter & Dart related
+# ========================
+.dart_tool/
+.packages
+.pub/
+.pub-cache/
+.buildlog/
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-versions
+.fvm/
+.fvmrc
+
+**/doc/api/
+**/ios/Flutter/.last_build_id
+lib/generated_plugin_registrant.dart
+
+# ========================
+# Build outputs
+# ========================
+build/
+coverage/
+
+# Android builds
+/android/.gradle/
+/android/app/build/
+/android/app/debug
+/android/app/profile
+/android/app/release
+android/local.properties
+android/key.properties
+
+# iOS/macOS builds
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Pods/
+ios/.symlinks/
+ios/build/
+ios/Runner.xcworkspace/
+ios/Runner/GoogleService-Info.plist
+
+macos/Flutter/GeneratedPluginRegistrant.swift
+macos/Pods/
+macos/.symlinks/
+macos/build/
+macos/Runner.xcworkspace/
+
+# Web build
+web/.dart_tool/
+web/build/
+
+# Linux & Windows builds
+linux/build/
+windows/build/
+
+# ========================
+# IDE files
+# ========================
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Uncomment if you want to ignore VS Code settings
+#.vscode/
+
+# ========================
+# OS / Miscellaneous
+# ========================
+*.class
+*.log
+*.pyc
+*.swp
+*.lock
+*.tmp
+*.bak
+*.orig
+.DS_Store
+.atom/
+.history
+.svn/
+
+# ========================
+# Symbolication / Obfuscation
+# ========================
+app.*.symbols
+app.*.map.json
+
+# Ignore pubspec.lock
+pubspec.lock

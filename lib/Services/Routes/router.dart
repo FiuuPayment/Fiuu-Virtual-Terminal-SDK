@@ -4,7 +4,6 @@ import 'package:sample_app/Controller/Blank/blank.dart';
 import 'package:sample_app/Controller/Cart/cart.dart';
 import 'package:sample_app/Controller/Cart/cart_detail.dart';
 import 'package:sample_app/Controller/Home/home.dart';
-import 'package:sample_app/Controller/OpenReport/open_report.dart';
 import 'package:sample_app/Controller/Receipt/receipt.dart';
 
 // ##### NEED TO RUN TO GENERATE ROUTES ######
@@ -17,7 +16,6 @@ import 'package:sample_app/Controller/Receipt/receipt.dart';
     AutoRoute(page: AppRoot, initial: true),
     AutoRoute(page: Home),
     AutoRoute(page: Receipt),
-    AutoRoute(page: OpenReport),
     AutoRoute(page: Cart),
     AutoRoute(page: Blank),
     AutoRoute(page: CartDetail)

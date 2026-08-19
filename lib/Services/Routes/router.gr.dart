@@ -18,7 +18,6 @@ import '../../Controller/Blank/blank.dart' as _i6;
 import '../../Controller/Cart/cart.dart' as _i5;
 import '../../Controller/Cart/cart_detail.dart' as _i7;
 import '../../Controller/Home/home.dart' as _i2;
-import '../../Controller/OpenReport/open_report.dart' as _i4;
 import '../../Controller/Receipt/receipt.dart' as _i3;
 
 class AppRouter extends _i8.RootStackRouter {
@@ -40,10 +39,6 @@ class AppRouter extends _i8.RootStackRouter {
       return _i8.MaterialPageX<dynamic>(
           routeData: routeData,
           child: _i3.Receipt(key: args.key, receiptData: args.receiptData));
-    },
-    OpenReport.name: (routeData) {
-      return _i8.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i4.OpenReport());
     },
     Cart.name: (routeData) {
       final args = routeData.argsAs<CartArgs>();
@@ -71,7 +66,6 @@ class AppRouter extends _i8.RootStackRouter {
         _i8.RouteConfig(AppRoot.name, path: '/'),
         _i8.RouteConfig(Home.name, path: '/Home'),
         _i8.RouteConfig(Receipt.name, path: '/Receipt'),
-        _i8.RouteConfig(OpenReport.name, path: '/open-report'),
         _i8.RouteConfig(Cart.name, path: '/Cart'),
         _i8.RouteConfig(Blank.name, path: '/Blank'),
         _i8.RouteConfig(CartDetail.name, path: '/cart-detail')
@@ -116,14 +110,6 @@ class ReceiptArgs {
   String toString() {
     return 'ReceiptArgs{key: $key, receiptData: $receiptData}';
   }
-}
-
-/// generated route for
-/// [_i4.OpenReport]
-class OpenReport extends _i8.PageRouteInfo<void> {
-  const OpenReport() : super(OpenReport.name, path: '/open-report');
-
-  static const String name = 'OpenReport';
 }
 
 /// generated route for

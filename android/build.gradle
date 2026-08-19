@@ -1,16 +1,3 @@
-buildscript {
-    ext.kotlin_version = '1.3.50'
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
 allprojects {
     repositories {
         google()
@@ -24,6 +11,17 @@ subprojects {
 }
 subprojects {
     project.evaluationDependsOn(':app')
+}
+
+// Some older plugins (file_picker, open_file) don't declare an Android
+// namespace, which AGP 8+ requires. Fall back to their Gradle `group`.
+subprojects { subproject ->
+    subproject.plugins.withId('com.android.library') {
+        def androidExt = subproject.extensions.findByName('android')
+        if (androidExt != null && androidExt.namespace == null) {
+            androidExt.namespace = subproject.group.toString()
+        }
+    }
 }
 
 tasks.register("clean", Delete) {

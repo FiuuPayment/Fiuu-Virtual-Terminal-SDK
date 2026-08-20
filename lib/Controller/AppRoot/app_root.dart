@@ -3,9 +3,10 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sample_app/Services/Routes/router.gr.dart';
+import 'package:sample_app/Services/Routes/router.dart';
 import 'package:sample_app/Services/Theme/app_theme.dart';
 
+@RoutePage(name: 'AppRootRoute')
 class AppRoot extends StatelessWidget {
   const AppRoot({Key? key}) : super(key: key);
 
@@ -30,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    AutoRouter.of(context).push(const Home());
+    context.router.push(const HomeRoute());
 
     _deeplinkSubscription =
         _event.receiveBroadcastStream().listen(_parseDeeplinkUrl);
@@ -48,9 +49,9 @@ class _SplashScreenState extends State<SplashScreen> {
       var uri = Uri.parse(url);
       String opType = uri.queryParameters['opType'].toString();
       if (opType.contains('SALE')) {
-        AutoRouter.of(context).push(CartDetail(data: uri.queryParameters));
+        context.router.push(CartDetailRoute(data: uri.queryParameters));
       } else {
-        AutoRouter.of(context).push(Blank(data: uri.queryParameters));
+        context.router.push(BlankRoute(data: uri.queryParameters));
       }
     }
   }

@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 import '../../Services/Theme/app_theme.dart';
 
+@RoutePage(name: 'ReceiptRoute')
 class Receipt extends StatefulWidget {
   const Receipt({Key? key, required this.receiptData}) : super(key: key);
 

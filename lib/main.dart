@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'Services/Routes/router.gr.dart';
+import 'Services/Routes/router.dart';
 import 'Services/Theme/app_theme.dart';
 
 void main() {

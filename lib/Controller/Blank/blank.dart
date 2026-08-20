@@ -1,6 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:sample_app/Widgets/transaction_summary_view.dart';
 
+@RoutePage(name: 'BlankRoute')
 class Blank extends StatefulWidget {
   final Map<String, dynamic>? data;
 
@@ -21,7 +23,9 @@ class _BlankState extends State<Blank> {
     return WillPopScope(
       child: Scaffold(
         appBar: AppBar(title: const Text('Transaction Result')),
-        body: TransactionSummaryView(data: widget.data ?? const {}),
+        body: SafeArea(
+          child: TransactionSummaryView(data: widget.data ?? const {}),
+        ),
       ),
       onWillPop: () async => true,
     );

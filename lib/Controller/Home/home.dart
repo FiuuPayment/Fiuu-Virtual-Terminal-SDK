@@ -1,9 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:sample_app/Services/Helper/helper.dart';
-import 'package:sample_app/Services/Routes/router.gr.dart';
+import 'package:sample_app/Services/Routes/router.dart';
+import 'package:sample_app/Services/Theme/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+@RoutePage(name: 'HomeRoute')
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -83,7 +85,7 @@ class _HomeState extends State<Home> {
 
     if (selectedCountry != null) {
       debugPrint("logCountry home selectedCountry = " + selectedCountry);
-      AutoRouter.of(context).push(Cart(country: selectedCountry));
+      context.router.push(CartRoute(country: selectedCountry));
     }
   }
 
@@ -214,14 +216,14 @@ class _ActionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final Color background =
-        filled ? theme.colorScheme.primary : theme.colorScheme.surfaceContainerLow;
+        filled ? AppTheme.fiuuBlue : theme.colorScheme.surfaceContainerLow;
     final Color foreground =
-        filled ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface;
+        filled ? Colors.white : theme.colorScheme.onSurface;
     final Color iconBackground = filled
-        ? theme.colorScheme.onPrimary.withValues(alpha: 0.15)
+        ? Colors.white.withValues(alpha: 0.15)
         : theme.colorScheme.primary.withValues(alpha: 0.1);
     final Color iconColor =
-        filled ? theme.colorScheme.onPrimary : theme.colorScheme.primary;
+        filled ? Colors.white : theme.colorScheme.primary;
 
     return Material(
       color: background,

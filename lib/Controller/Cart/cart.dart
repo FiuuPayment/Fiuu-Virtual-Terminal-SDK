@@ -1,7 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sample_app/Services/Helper/helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+const double _minAmount = 1.01;
+
+@RoutePage(name: 'CartRoute')
 class Cart extends StatefulWidget {
   final String country;
 
@@ -12,7 +17,6 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
-
   String currency = "";
 
   List<Map<String, dynamic>> channelsMY = [
@@ -125,9 +129,35 @@ class _CartState extends State<Cart> {
   ];
 
   String _payType = '2';
-  final TextEditingController _amountController = TextEditingController(text: '1.01');
+  final TextEditingController _amountController =
+      TextEditingController(text: '1.01');
+
+  /// Amount must be expressed with exactly 2 decimal places and be at
+  /// least [_minAmount].
+  String? get _amountErrorText {
+    final text = _amountController.text.trim();
+    if (text.isEmpty) return 'Amount is required';
+    if (!RegExp(r'^\d+\.\d{2}$').hasMatch(text)) {
+      return 'Amount must have exactly 2 decimal places';
+    }
+    if (double.parse(text) < _minAmount) {
+      return 'Minimum amount is ${_minAmount.toStringAsFixed(2)}';
+    }
+    return null;
+  }
+
+  bool get _isAmountValid => _amountErrorText == null;
 
   Future<void> onProceed(Map<String, dynamic> data) async {
+    if (!_isAmountValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_amountErrorText!),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+      return;
+    }
     final Uri launchUri = Uri(
       scheme: 'razervt',
       host: "merchant.razer.com",
@@ -157,7 +187,6 @@ class _CartState extends State<Cart> {
 
   @override
   Widget build(BuildContext context) {
-
     List<Map<String, dynamic>> channelsCountry = [];
     debugPrint("logCountry build country = " + widget.country);
 
@@ -173,135 +202,160 @@ class _CartState extends State<Cart> {
     }
 
     debugPrint("logCountry currency = " + currency);
-    debugPrint("logCountry channelsCountry.length = " + channelsCountry.length.toString());
+    debugPrint("logCountry channelsCountry.length = " +
+        channelsCountry.length.toString());
 
     return WillPopScope(
       onWillPop: () async => true,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Payment Page'),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.share_outlined),
-              onPressed: () {},
-            ),
-          ],
         ),
-
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            final theme = Theme.of(context);
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Amount Input
-                  Text(
-                    'Enter Amount',
-                    style: theme.textTheme.headlineSmall
-                        ?.copyWith(fontWeight: FontWeight.w700),
-                  ),
-                  const SizedBox(height: 4.0),
-                  Text(
-                    'Set the amount to charge for this transaction.',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant),
-                  ),
-                  const SizedBox(height: 16.0),
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20.0, vertical: 8.0),
-                      child: TextField(
-                        controller: _amountController,
-                        keyboardType:
-                            const TextInputType.numberWithOptions(decimal: true),
-                        textAlign: TextAlign.right,
-                        style: theme.textTheme.headlineMedium
-                            ?.copyWith(fontWeight: FontWeight.w800),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          filled: false,
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.only(left: 4.0),
-                            child: Align(
-                              widthFactor: 1.0,
-                              child: Text(
-                                currency,
-                                style: theme.textTheme.headlineMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: theme.colorScheme.onSurfaceVariant,
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final theme = Theme.of(context);
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Amount Input
+                    Text(
+                      'Enter Amount',
+                      style: theme.textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(height: 4.0),
+                    Text(
+                      'Set the amount to charge for this transaction.',
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                    ),
+                    const SizedBox(height: 16.0),
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 8.0),
+                        child: TextField(
+                          controller: _amountController,
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true),
+                          inputFormatters: [
+                            TextInputFormatter.withFunction(
+                                (oldValue, newValue) {
+                              if (newValue.text.isEmpty) return newValue;
+                              final isValid = RegExp(r'^\d*\.?\d{0,2}$')
+                                  .hasMatch(newValue.text);
+                              return isValid ? newValue : oldValue;
+                            }),
+                          ],
+                          textAlign: TextAlign.right,
+                          style: theme.textTheme.headlineMedium
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            filled: false,
+                            errorText: _amountErrorText,
+                            prefixIcon: Padding(
+                              padding: const EdgeInsets.only(left: 4.0),
+                              child: Align(
+                                widthFactor: 1.0,
+                                child: Text(
+                                  currency,
+                                  style:
+                                      theme.textTheme.headlineMedium?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                  ),
                                 ),
                               ),
                             ),
+                            prefixIconConstraints:
+                                const BoxConstraints(minWidth: 0, minHeight: 0),
                           ),
-                          prefixIconConstraints:
-                              const BoxConstraints(minWidth: 0, minHeight: 0),
+                          onChanged: (_) => setState(() {}),
                         ),
-                        onChanged: (_) => setState(() {}),
                       ),
                     ),
-                  ),
 
-                  const SizedBox(height: 32.0),
+                    const SizedBox(height: 32.0),
 
-                  // Payment Methods Grid
-                  Text(
-                    'Choose Payment Method',
-                    style: theme.textTheme.titleSmall
-                        ?.copyWith(fontWeight: FontWeight.w700),
-                  ),
-                  const SizedBox(height: 12.0),
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: GridView.count(
-                        primary: false,
-                        crossAxisCount: 4,
-                        shrinkWrap: true,
-                        crossAxisSpacing: 12.0,
-                        mainAxisSpacing: 16.0,
-                        childAspectRatio: 0.9,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: List.generate(channelsCountry.length, (index) {
-                          return Material(
-                            color: theme.colorScheme.surfaceContainerHighest
-                                .withValues(alpha: 0.4),
-                            borderRadius: BorderRadius.circular(14.0),
-                            child: InkWell(
+                    // Payment Methods Grid
+                    Text(
+                      'Choose Payment Method',
+                      style: theme.textTheme.titleSmall
+                          ?.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(height: 12.0),
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: GridView.count(
+                          primary: false,
+                          crossAxisCount: 4,
+                          shrinkWrap: true,
+                          crossAxisSpacing: 12.0,
+                          mainAxisSpacing: 16.0,
+                          childAspectRatio: 0.9,
+                          physics: const NeverScrollableScrollPhysics(),
+                          children:
+                              List.generate(channelsCountry.length, (index) {
+                            return Material(
+                              color: theme.colorScheme.surfaceContainerHighest
+                                  .withValues(alpha: 0.4),
                               borderRadius: BorderRadius.circular(14.0),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.asset(channelsCountry[index]['icon']),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(14.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.asset(
+                                      channelsCountry[index]['icon']),
+                                ),
+                                onTap: () async {
+                                  final channel = channelsCountry[index]
+                                          ['channel']
+                                      .toString();
+                                  if (channel.contains('CARD')) {
+                                    onProceed(channelsCountry[index]);
+                                  } else if (channel.contains('DuitNow')) {
+                                    // DuitNow only supports merchant-presented
+                                    // QR, so skip the pay-type picker.
+                                    _payType = '2';
+                                    onProceed(channelsCountry[index]);
+                                  } else {
+                                    onSetPayType(
+                                        context, channelsCountry[index]);
+                                  }
+                                },
                               ),
-                              onTap: () async {
-                                if (!channelsCountry[index]['channel']
-                                    .toString()
-                                    .contains('CARD')) {
-                                  onSetPayType(context, channelsCountry[index]);
-                                } else {
-                                  onProceed(channelsCountry[index]);
-                                }
-                              },
-                            ),
-                          );
-                        }),
+                            );
+                          }),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
   }
 
   void onSetPayType(BuildContext context, Map<String, dynamic> data) {
+    if (!_isAmountValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_amountErrorText!),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+      return;
+    }
     showModalBottomSheet(
       context: context,
       isDismissible: true, // Allow dismiss by tapping outside
@@ -309,42 +363,44 @@ class _CartState extends State<Cart> {
       isScrollControlled: false,
       builder: (context) {
         final theme = Theme.of(context);
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Select Payment Type',
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 16.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _PayTypeOption(
-                    image: 'assets/images/qrcode-dark.png',
-                    label: 'Show QR',
-                    onTap: () {
-                      Navigator.pop(context); // Close modal
-                      _payType = '2';
-                      onProceed(data);
-                    },
-                  ),
-                  _PayTypeOption(
-                    image: 'assets/images/scan-dark.png',
-                    label: 'Scan QR',
-                    onTap: () {
-                      Navigator.pop(context); // Close modal
-                      _payType = '1';
-                      onProceed(data);
-                    },
-                  ),
-                ],
-              ),
-            ],
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Select Payment Type',
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 16.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _PayTypeOption(
+                      image: 'assets/images/qrcode-dark.png',
+                      label: 'Show QR',
+                      onTap: () {
+                        Navigator.pop(context); // Close modal
+                        _payType = '2';
+                        onProceed(data);
+                      },
+                    ),
+                    _PayTypeOption(
+                      image: 'assets/images/scan-dark.png',
+                      label: 'Scan QR',
+                      onTap: () {
+                        Navigator.pop(context); // Close modal
+                        _payType = '1';
+                        onProceed(data);
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },

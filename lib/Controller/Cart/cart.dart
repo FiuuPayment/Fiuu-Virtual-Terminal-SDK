@@ -179,24 +179,10 @@ class _CartState extends State<Cart> {
       onWillPop: () async => true,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Payment Page',
-            style: TextStyle(fontSize: 14.0, color: Colors.white),
-          ),
-          centerTitle: true,
-          elevation: 1.0,
-          backgroundColor: const Color(0xFF003BA0),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(16.0),
-            ),
-          ),
+          title: const Text('Payment Page'),
           actions: <Widget>[
             IconButton(
-              icon: const Icon(
-                Icons.share_outlined,
-                color: Colors.white,
-              ),
+              icon: const Icon(Icons.share_outlined),
               onPressed: () {},
             ),
           ],
@@ -204,237 +190,113 @@ class _CartState extends State<Cart> {
 
         body: LayoutBuilder(
           builder: (context, constraints) {
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // "Your Items" Title
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: const [
-                        Text(
-                          'Your Items',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              fontSize: 24.0,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          'You have 2 items in your cart.',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              fontSize: 14.0,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    const Divider(),
-
-                    // List of items
-                    ListTile(
-                      leading: Image.asset(
-                        'assets/images/cart/razer_keyboard_keychain.jpg',
-                        width: 64.0,
-                        height: 64.0,
-                        fit: BoxFit.cover,
-                      ),
-                      title: Column(
-                        children: const [
-                          Text(
-                            'Keyboard Keychain',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.remove_circle_outline_outlined),
-                            title: Text('1'),
-                            trailing: Icon(Icons.add_circle_outline_outlined),
-                          ),
-                        ],
-                      ),
-                      trailing: Text(
-                        currency + ' 0.30',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-
-                    ListTile(
-                      leading: Image.asset(
-                        'assets/images/cart/razer_steel_tag.png',
-                        width: 64.0,
-                        height: 64.0,
-                        fit: BoxFit.cover,
-                      ),
-                      title: Column(
-                        children: const [
-                          Text(
-                            'Steel Tag',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.remove_circle_outline_outlined),
-                            title: Text('1'),
-                            trailing: Icon(Icons.add_circle_outline_outlined),
-                          ),
-                        ],
-                      ),
-                      trailing: Text(
-                        currency + ' 0.30',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-
-                    const SizedBox(height: 40.0),
-
-                    // Subtotal, Delivery Charges & Total
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Subtotal',
-                                textAlign: TextAlign.start,
-                                style: const TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                currency + ' 0.60',
-                                textAlign: TextAlign.start,
-                                style: const TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Delivery Charges',
-                                textAlign: TextAlign.start,
-                                style: const TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                currency + ' 0.41',
-                                textAlign: TextAlign.start,
-                                style: const TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          const Divider(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Total',
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                currency + ' ${_amountController.text}',
-                                textAlign: TextAlign.start,
-                                style: const TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 20.0),
-
-                    // Amount Input Field
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            final theme = Theme.of(context);
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Amount Input
+                  Text(
+                    'Enter Amount',
+                    style: theme.textTheme.headlineSmall
+                        ?.copyWith(fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(height: 4.0),
+                  Text(
+                    'Set the amount to charge for this transaction.',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 8.0),
                       child: TextField(
                         controller: _amountController,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          labelText: 'Edit Amount',
-                          border: OutlineInputBorder(),
+                        keyboardType:
+                            const TextInputType.numberWithOptions(decimal: true),
+                        textAlign: TextAlign.right,
+                        style: theme.textTheme.headlineMedium
+                            ?.copyWith(fontWeight: FontWeight.w800),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          filled: false,
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.only(left: 4.0),
+                            child: Align(
+                              widthFactor: 1.0,
+                              child: Text(
+                                currency,
+                                style: theme.textTheme.headlineMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ),
+                          prefixIconConstraints:
+                              const BoxConstraints(minWidth: 0, minHeight: 0),
                         ),
+                        onChanged: (_) => setState(() {}),
                       ),
                     ),
+                  ),
 
-                    const SizedBox(height: 20.0),
+                  const SizedBox(height: 32.0),
 
-                    // Payment Methods Grid
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                  // Payment Methods Grid
+                  Text(
+                    'Choose Payment Method',
+                    style: theme.textTheme.titleSmall
+                        ?.copyWith(fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(height: 12.0),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
                       child: GridView.count(
                         primary: false,
                         crossAxisCount: 4,
                         shrinkWrap: true,
-                        crossAxisSpacing: 5.0,
-                        mainAxisSpacing: 20.0,
+                        crossAxisSpacing: 12.0,
+                        mainAxisSpacing: 16.0,
                         childAspectRatio: 0.9,
                         physics: const NeverScrollableScrollPhysics(),
                         children: List.generate(channelsCountry.length, (index) {
-                          return InkWell(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16.0),
-                              child: Image.asset(channelsCountry[index]['icon']),
+                          return Material(
+                            color: theme.colorScheme.surfaceContainerHighest
+                                .withValues(alpha: 0.4),
+                            borderRadius: BorderRadius.circular(14.0),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(14.0),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.asset(channelsCountry[index]['icon']),
+                              ),
+                              onTap: () async {
+                                if (!channelsCountry[index]['channel']
+                                    .toString()
+                                    .contains('CARD')) {
+                                  onSetPayType(context, channelsCountry[index]);
+                                } else {
+                                  onProceed(channelsCountry[index]);
+                                }
+                              },
                             ),
-                            onTap: () async {
-                              if (!channelsCountry[index]['channel']
-                                  .toString()
-                                  .contains('CARD')) {
-                                onSetPayType(context, channelsCountry[index]);
-                              } else {
-                                onProceed(channelsCountry[index]);
-                              }
-                            },
                           );
                         }),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           },
         ),
-
-
       ),
     );
   }
@@ -442,56 +304,94 @@ class _CartState extends State<Cart> {
   void onSetPayType(BuildContext context, Map<String, dynamic> data) {
     showModalBottomSheet(
       context: context,
-      isDismissible: true,  // Allow dismiss by tapping outside
-      enableDrag: true,     // Allow dismiss by swiping down
+      isDismissible: true, // Allow dismiss by tapping outside
+      enableDrag: true, // Allow dismiss by swiping down
       isScrollControlled: false,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
-      ),
       builder: (context) {
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,  // Allows tap outside to dismiss
-          onTap: () => Navigator.pop(context),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InkWell(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16.0),
-                    child: Image.asset(
-                      'assets/images/qrcode-dark.png',
-                      scale: 2.0,
-                    ),
+        final theme = Theme.of(context);
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Select Payment Type',
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _PayTypeOption(
+                    image: 'assets/images/qrcode-dark.png',
+                    label: 'Show QR',
+                    onTap: () {
+                      Navigator.pop(context); // Close modal
+                      _payType = '2';
+                      onProceed(data);
+                    },
                   ),
-                  onTap: () {
-                    Navigator.pop(context); // Close modal
-                    _payType = '2';
-                    onProceed(data);
-                  },
-                ),
-                InkWell(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16.0),
-                    child: Image.asset(
-                      'assets/images/scan-dark.png',
-                      scale: 2.0,
-                    ),
+                  _PayTypeOption(
+                    image: 'assets/images/scan-dark.png',
+                    label: 'Scan QR',
+                    onTap: () {
+                      Navigator.pop(context); // Close modal
+                      _payType = '1';
+                      onProceed(data);
+                    },
                   ),
-                  onTap: () {
-                    Navigator.pop(context); // Close modal
-                    _payType = '1';
-                    onProceed(data);
-                  },
-                ),
-              ],
-            ),
+                ],
+              ),
+            ],
           ),
         );
       },
     );
   }
+}
 
+class _PayTypeOption extends StatelessWidget {
+  final String image;
+  final String label;
+  final VoidCallback onTap;
+
+  const _PayTypeOption({
+    Key? key,
+    required this.image,
+    required this.label,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+      borderRadius: BorderRadius.circular(16.0),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16.0),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12.0),
+                child: Image.asset(image, scale: 2.0),
+              ),
+              const SizedBox(height: 8.0),
+              Text(
+                label,
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

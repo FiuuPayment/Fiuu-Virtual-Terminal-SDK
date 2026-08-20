@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'Services/Routes/router.gr.dart';
+import 'Services/Theme/app_theme.dart';
 
 void main() {
   runApp(const AppRootMain());
@@ -32,9 +33,7 @@ class _AppRootMainState extends State<AppRootMain> {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Fiuu VT App2App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: AppTheme.light,
       routerDelegate: _rootRouter.delegate(),
       routeInformationParser: _rootRouter.defaultRouteParser(),
     );

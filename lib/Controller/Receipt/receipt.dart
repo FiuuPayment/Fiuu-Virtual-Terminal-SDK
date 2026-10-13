@@ -1,5 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
+import '../../Services/Theme/app_theme.dart';
+
+@RoutePage(name: 'ReceiptRoute')
 class Receipt extends StatefulWidget {
   const Receipt({Key? key, required this.receiptData}) : super(key: key);
 
@@ -23,19 +27,38 @@ class _ReceiptState extends State<Receipt> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final bool isRefund = widget.receiptData['Status'] == 'cancelled';
+
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
+      backgroundColor: theme.colorScheme.surfaceContainerLowest,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
           child: Stack(
             alignment: Alignment.topRight,
             children: [
               Container(
-                padding: const EdgeInsets.only(top: 24.0, left: 16, right: 16),
-                color: Colors.white,
+                width: double.infinity,
+                margin: const EdgeInsets.only(top: 8.0),
+                padding: const EdgeInsets.only(top: 24.0, left: 16, right: 16, bottom: 8.0),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerHigh,
+                  borderRadius: BorderRadius.circular(20.0),
+                  border: Border.all(
+                    color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.12),
+                      blurRadius: 24.0,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
                 child: Column(
                   children: [
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 16),
                     const Image(
                       image: AssetImage('assets/images/logo.png'),
                       height: 64.0,
@@ -114,16 +137,29 @@ class _ReceiptState extends State<Receipt> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 32),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 8.0),
+                      decoration: BoxDecoration(
+                        color: isRefund
+                            ? StatusColors.failedContainer
+                            : StatusColors.successContainer,
+                        borderRadius: BorderRadius.circular(24.0),
+                      ),
                       child: Text(
-                        widget.receiptData['Status'] == 'cancelled' ? 'REFUND' : 'SALE',
-                        style: const TextStyle(
-                            fontFamily: 'Monaco', fontSize: 24.0),
+                        isRefund ? 'REFUND' : 'SALE',
+                        style: TextStyle(
+                            fontFamily: 'Monaco',
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.5,
+                            color: isRefund
+                                ? StatusColors.failed
+                                : StatusColors.success),
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 32),
                     Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16.0, vertical: 4.0),
@@ -310,6 +346,19 @@ class _ReceiptState extends State<Receipt> {
                       ),
                     )
                   ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 4.0, right: 4.0),
+                child: Material(
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  shape: const CircleBorder(),
+                  elevation: 2.0,
+                  child: IconButton(
+                    icon: const Icon(Icons.close_rounded),
+                    tooltip: 'Close',
+                    onPressed: () => Navigator.of(context).maybePop(),
+                  ),
                 ),
               ),
             ],

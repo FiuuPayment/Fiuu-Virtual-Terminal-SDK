@@ -1,10 +1,11 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:sample_app/Services/Helper/helper.dart';
-import 'package:sample_app/Services/Routes/router.gr.dart';
+import 'package:sample_app/Services/Routes/router.dart';
+import 'package:sample_app/Services/Theme/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+@RoutePage(name: 'HomeRoute')
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -13,8 +14,14 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final TextEditingController _orderIdController =
+      TextEditingController(text: '');
 
-  final TextEditingController _orderIdController = TextEditingController(text: '');
+  static const List<Map<String, String>> _countries = [
+    {'code': 'MY', 'name': 'Malaysia', 'flag': '🇲🇾'},
+    {'code': 'SG', 'name': 'Singapore', 'flag': '🇸🇬'},
+    {'code': 'PH', 'name': 'Philippines', 'flag': '🇵🇭'},
+  ];
 
   @override
   void initState() {
@@ -27,168 +34,128 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 
+  void _requireOrderId(VoidCallback action) {
+    if (_orderIdController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Order ID is required!'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+      return;
+    }
+    action();
+  }
+
   Future<void> _showCountryPicker(BuildContext context) async {
-    String? selectedCountry = await showDialog<String>(
+    String? selectedCountry = await showModalBottomSheet<String>(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Choose Country'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: const Text('MY'),
-                onTap: () => Navigator.of(context).pop('MY'),
-              ),
-              ListTile(
-                title: const Text('SG'),
-                onTap: () => Navigator.of(context).pop('SG'),
-              ),
-              ListTile(
-                title: const Text('PH'),
-                onTap: () => Navigator.of(context).pop('PH'),
-              ),
-            ],
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Choose Country',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                ),
+                const SizedBox(height: 8.0),
+                for (final country in _countries)
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Text(
+                      country['flag']!,
+                      style: const TextStyle(fontSize: 24.0),
+                    ),
+                    title: Text(country['name']!),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => Navigator.of(context).pop(country['code']),
+                  ),
+              ],
+            ),
           ),
         );
       },
     );
 
     if (selectedCountry != null) {
-      // Navigate and pass the selected country
       debugPrint("logCountry home selectedCountry = " + selectedCountry);
-      AutoRouter.of(context).push(Cart(country: selectedCountry));
+      context.router.push(CartRoute(
+        country: selectedCountry,
+        orderId: _orderIdController.text.trim(),
+      ));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text(
-          'Fiuu VT App-to-App Demo',
-          style: TextStyle(fontSize: 14.0, color: Colors.white),
-        ),
-        centerTitle: true,
-        elevation: 0.0,
-        backgroundColor: const Color(0xFF003BA0),
+        title: const Text('Fiuu VT App-to-App Demo'),
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextField(
-                  controller: _orderIdController,
-                  decoration: const InputDecoration(
-                    labelText: 'Order ID',
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Enter an order ID to check its status or void it, or start a new sale below.',
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              ),
+              const SizedBox(height: 20.0),
+              TextField(
+                controller: _orderIdController,
+                decoration: const InputDecoration(
+                  labelText: 'Order ID',
+                  prefixIcon: Icon(Icons.receipt_long_outlined),
+                ),
+              ),
+              const SizedBox(height: 28.0),
+              Text(
+                'Actions',
+                style: theme.textTheme.titleSmall
+                    ?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 12.0),
+              _ActionTile(
+                icon: Icons.shopping_cart_checkout_rounded,
+                label: 'New Sale',
+                description: 'Start a new payment for a selected country.',
+                filled: true,
+                onTap: () => _showCountryPicker(context),
+              ),
+              const SizedBox(height: 12.0),
+              Row(
+                children: [
+                  Expanded(
+                    child: _ActionTile(
+                      icon: Icons.undo_rounded,
+                      label: 'Void',
+                      onTap: () => _requireOrderId(onVoid),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16.0),
-                GridView.count(
-                  primary: false,
-                  crossAxisCount: 4,
-                  shrinkWrap: true,
-                  crossAxisSpacing: 5.0,
-                  mainAxisSpacing: 20.0,
-                  childAspectRatio: 0.9,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    InkWell(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16.0),
-                        child: Container(
-                          width: 64.0,
-                          height: 64.0,
-                          color: Theme.of(context).primaryColor,
-                          alignment: Alignment.center,
-                          child: const Text(
-                            'Pay',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      onTap: () => _showCountryPicker(context),
-                    ), // Sale
-
-                    InkWell(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16.0),
-                        child: Container(
-                          width: 64.0,
-                          height: 64.0,
-                          color: Theme.of(context).primaryColor,
-                          alignment: Alignment.center,
-                          child: const Text(
-                            'Void',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white),
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        if (_orderIdController.text.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Order ID is required!'),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                          return;
-                        }
-                        onVoid();
-                      },
+                  const SizedBox(width: 12.0),
+                  Expanded(
+                    child: _ActionTile(
+                      icon: Icons.fact_check_outlined,
+                      label: 'Status',
+                      onTap: () => _requireOrderId(onStatus),
                     ),
-
-                    InkWell(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16.0),
-                        child: Container(
-                          width: 64.0,
-                          height: 64.0,
-                          color: Theme.of(context).primaryColor,
-                          alignment: Alignment.center,
-                          child: const Text(
-                            'Status',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white),
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        if (_orderIdController.text.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Order ID is required!'),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                          return;
-                        }
-                        onStatus();
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          );
-        },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -230,5 +197,96 @@ class _HomeState extends State<Home> {
       debugPrint('logVoidStatus Error: $e');
     }
   }
+}
 
+class _ActionTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String? description;
+  final bool filled;
+  final VoidCallback onTap;
+
+  const _ActionTile({
+    Key? key,
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.description,
+    this.filled = false,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final Color background =
+        filled ? AppTheme.fiuuBlue : theme.colorScheme.surfaceContainerLow;
+    final Color foreground =
+        filled ? Colors.white : theme.colorScheme.onSurface;
+    final Color iconBackground = filled
+        ? Colors.white.withValues(alpha: 0.15)
+        : theme.colorScheme.primary.withValues(alpha: 0.1);
+    final Color iconColor =
+        filled ? Colors.white : theme.colorScheme.primary;
+
+    return Material(
+      color: background,
+      borderRadius: BorderRadius.circular(18.0),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18.0),
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18.0),
+            border: filled
+                ? null
+                : Border.all(
+                    color: theme.colorScheme.outlineVariant
+                        .withValues(alpha: 0.4)),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          child: Row(
+            children: [
+              Container(
+                width: 44.0,
+                height: 44.0,
+                decoration: BoxDecoration(
+                  color: iconBackground,
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                alignment: Alignment.center,
+                child: Icon(icon, color: iconColor, size: 22.0),
+              ),
+              const SizedBox(width: 14.0),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      label,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        color: foreground,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    if (description != null) ...[
+                      const SizedBox(height: 2.0),
+                      Text(
+                        description!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: foreground.withValues(alpha: 0.8),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right_rounded,
+                  color: foreground.withValues(alpha: 0.7)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

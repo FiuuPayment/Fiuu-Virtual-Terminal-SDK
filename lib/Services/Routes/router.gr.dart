@@ -1,196 +1,249 @@
-// **************************************************************************
-// AutoRouteGenerator
-// **************************************************************************
-
+// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
-// AutoRouteGenerator
+// AutoRouterGenerator
 // **************************************************************************
-//
+
 // ignore_for_file: type=lint
+// coverage:ignore-file
 
-import 'package:auto_route/auto_route.dart' as _i8;
-import 'package:flutter/material.dart' as _i9;
+part of 'router.dart';
 
-import '../../Controller/AppRoot/app_root.dart' as _i1;
-import '../../Controller/Blank/blank.dart' as _i6;
-import '../../Controller/Cart/cart.dart' as _i5;
-import '../../Controller/Cart/cart_detail.dart' as _i7;
-import '../../Controller/Home/home.dart' as _i2;
-import '../../Controller/OpenReport/open_report.dart' as _i4;
-import '../../Controller/Receipt/receipt.dart' as _i3;
+/// generated route for
+/// [AppRoot]
+class AppRootRoute extends PageRouteInfo<void> {
+  const AppRootRoute({List<PageRouteInfo>? children})
+      : super(AppRootRoute.name, initialChildren: children);
 
-class AppRouter extends _i8.RootStackRouter {
-  AppRouter([_i9.GlobalKey<_i9.NavigatorState>? navigatorKey])
-      : super(navigatorKey);
+  static const String name = 'AppRootRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const AppRoot();
+    },
+  );
+}
+
+/// generated route for
+/// [Blank]
+class BlankRoute extends PageRouteInfo<BlankRouteArgs> {
+  BlankRoute({
+    Key? key,
+    Map<String, dynamic>? data,
+    List<PageRouteInfo>? children,
+  }) : super(
+          BlankRoute.name,
+          args: BlankRouteArgs(key: key, data: data),
+          initialChildren: children,
+        );
+
+  static const String name = 'BlankRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<BlankRouteArgs>(
+        orElse: () => const BlankRouteArgs(),
+      );
+      return Blank(key: args.key, data: args.data);
+    },
+  );
+}
+
+class BlankRouteArgs {
+  const BlankRouteArgs({this.key, this.data});
+
+  final Key? key;
+
+  final Map<String, dynamic>? data;
 
   @override
-  final Map<String, _i8.PageFactory> pagesMap = {
-    AppRoot.name: (routeData) {
-      return _i8.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i1.AppRoot());
-    },
-    Home.name: (routeData) {
-      return _i8.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i2.Home());
-    },
-    Receipt.name: (routeData) {
-      final args = routeData.argsAs<ReceiptArgs>();
-      return _i8.MaterialPageX<dynamic>(
-          routeData: routeData,
-          child: _i3.Receipt(key: args.key, receiptData: args.receiptData));
-    },
-    OpenReport.name: (routeData) {
-      return _i8.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i4.OpenReport());
-    },
-    Cart.name: (routeData) {
-      final args = routeData.argsAs<CartArgs>();
-      return _i8.MaterialPageX<dynamic>(
-          routeData: routeData,
-          child: _i5.Cart(key: args.key, country: args.country));
-    },
-    Blank.name: (routeData) {
-      final args = routeData.argsAs<BlankArgs>(orElse: () => const BlankArgs());
-      return _i8.MaterialPageX<dynamic>(
-          routeData: routeData,
-          child: _i6.Blank(key: args.key, data: args.data));
-    },
-    CartDetail.name: (routeData) {
-      final args = routeData.argsAs<CartDetailArgs>(
-          orElse: () => const CartDetailArgs());
-      return _i8.MaterialPageX<dynamic>(
-          routeData: routeData,
-          child: _i7.CartDetail(key: args.key, data: args.data));
-    }
-  };
+  String toString() {
+    return 'BlankRouteArgs{key: $key, data: $data}';
+  }
 
   @override
-  List<_i8.RouteConfig> get routes => [
-        _i8.RouteConfig(AppRoot.name, path: '/'),
-        _i8.RouteConfig(Home.name, path: '/Home'),
-        _i8.RouteConfig(Receipt.name, path: '/Receipt'),
-        _i8.RouteConfig(OpenReport.name, path: '/open-report'),
-        _i8.RouteConfig(Cart.name, path: '/Cart'),
-        _i8.RouteConfig(Blank.name, path: '/Blank'),
-        _i8.RouteConfig(CartDetail.name, path: '/cart-detail')
-      ];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! BlankRouteArgs) return false;
+    return key == other.key &&
+        const MapEquality<String, dynamic>().equals(data, other.data);
+  }
+
+  @override
+  int get hashCode =>
+      key.hashCode ^ const MapEquality<String, dynamic>().hash(data);
 }
 
 /// generated route for
-/// [_i1.AppRoot]
-class AppRoot extends _i8.PageRouteInfo<void> {
-  const AppRoot() : super(AppRoot.name, path: '/');
+/// [Cart]
+class CartRoute extends PageRouteInfo<CartRouteArgs> {
+  CartRoute({
+    Key? key,
+    required String country,
+    String orderId = '',
+    List<PageRouteInfo>? children,
+  }) : super(
+          CartRoute.name,
+          args: CartRouteArgs(key: key, country: country, orderId: orderId),
+          initialChildren: children,
+        );
 
-  static const String name = 'AppRoot';
+  static const String name = 'CartRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<CartRouteArgs>();
+      return Cart(key: args.key, country: args.country, orderId: args.orderId);
+    },
+  );
+}
+
+class CartRouteArgs {
+  const CartRouteArgs({this.key, required this.country, this.orderId = ''});
+
+  final Key? key;
+
+  final String country;
+
+  final String orderId;
+
+  @override
+  String toString() {
+    return 'CartRouteArgs{key: $key, country: $country, orderId: $orderId}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! CartRouteArgs) return false;
+    return key == other.key &&
+        country == other.country &&
+        orderId == other.orderId;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ country.hashCode ^ orderId.hashCode;
 }
 
 /// generated route for
-/// [_i2.Home]
-class Home extends _i8.PageRouteInfo<void> {
-  const Home() : super(Home.name, path: '/Home');
+/// [CartDetail]
+class CartDetailRoute extends PageRouteInfo<CartDetailRouteArgs> {
+  CartDetailRoute({
+    Key? key,
+    Map<String, dynamic>? data,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CartDetailRoute.name,
+          args: CartDetailRouteArgs(key: key, data: data),
+          initialChildren: children,
+        );
 
-  static const String name = 'Home';
+  static const String name = 'CartDetailRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<CartDetailRouteArgs>(
+        orElse: () => const CartDetailRouteArgs(),
+      );
+      return CartDetail(key: args.key, data: args.data);
+    },
+  );
+}
+
+class CartDetailRouteArgs {
+  const CartDetailRouteArgs({this.key, this.data});
+
+  final Key? key;
+
+  final Map<String, dynamic>? data;
+
+  @override
+  String toString() {
+    return 'CartDetailRouteArgs{key: $key, data: $data}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! CartDetailRouteArgs) return false;
+    return key == other.key &&
+        const MapEquality<String, dynamic>().equals(data, other.data);
+  }
+
+  @override
+  int get hashCode =>
+      key.hashCode ^ const MapEquality<String, dynamic>().hash(data);
 }
 
 /// generated route for
-/// [_i3.Receipt]
-class Receipt extends _i8.PageRouteInfo<ReceiptArgs> {
-  Receipt({_i9.Key? key, required Map<String, dynamic> receiptData})
-      : super(Receipt.name,
-            path: '/Receipt',
-            args: ReceiptArgs(key: key, receiptData: receiptData));
+/// [Home]
+class HomeRoute extends PageRouteInfo<void> {
+  const HomeRoute({List<PageRouteInfo>? children})
+      : super(HomeRoute.name, initialChildren: children);
 
-  static const String name = 'Receipt';
+  static const String name = 'HomeRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const Home();
+    },
+  );
 }
 
-class ReceiptArgs {
-  const ReceiptArgs({this.key, required this.receiptData});
+/// generated route for
+/// [Receipt]
+class ReceiptRoute extends PageRouteInfo<ReceiptRouteArgs> {
+  ReceiptRoute({
+    Key? key,
+    required Map<String, dynamic> receiptData,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ReceiptRoute.name,
+          args: ReceiptRouteArgs(key: key, receiptData: receiptData),
+          initialChildren: children,
+        );
 
-  final _i9.Key? key;
+  static const String name = 'ReceiptRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<ReceiptRouteArgs>();
+      return Receipt(key: args.key, receiptData: args.receiptData);
+    },
+  );
+}
+
+class ReceiptRouteArgs {
+  const ReceiptRouteArgs({this.key, required this.receiptData});
+
+  final Key? key;
 
   final Map<String, dynamic> receiptData;
 
   @override
   String toString() {
-    return 'ReceiptArgs{key: $key, receiptData: $receiptData}';
+    return 'ReceiptRouteArgs{key: $key, receiptData: $receiptData}';
   }
-}
-
-/// generated route for
-/// [_i4.OpenReport]
-class OpenReport extends _i8.PageRouteInfo<void> {
-  const OpenReport() : super(OpenReport.name, path: '/open-report');
-
-  static const String name = 'OpenReport';
-}
-
-/// generated route for
-/// [_i5.Cart]
-class Cart extends _i8.PageRouteInfo<CartArgs> {
-  Cart({_i9.Key? key, required String country})
-      : super(Cart.name,
-            path: '/Cart', args: CartArgs(key: key, country: country));
-
-  static const String name = 'Cart';
-}
-
-class CartArgs {
-  const CartArgs({this.key, required this.country});
-
-  final _i9.Key? key;
-
-  final String country;
 
   @override
-  String toString() {
-    return 'CartArgs{key: $key, country: $country}';
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ReceiptRouteArgs) return false;
+    return key == other.key &&
+        const MapEquality<String, dynamic>().equals(
+          receiptData,
+          other.receiptData,
+        );
   }
-}
-
-/// generated route for
-/// [_i6.Blank]
-class Blank extends _i8.PageRouteInfo<BlankArgs> {
-  Blank({_i9.Key? key, Map<String, dynamic>? data})
-      : super(Blank.name,
-            path: '/Blank', args: BlankArgs(key: key, data: data));
-
-  static const String name = 'Blank';
-}
-
-class BlankArgs {
-  const BlankArgs({this.key, this.data});
-
-  final _i9.Key? key;
-
-  final Map<String, dynamic>? data;
 
   @override
-  String toString() {
-    return 'BlankArgs{key: $key, data: $data}';
-  }
-}
-
-/// generated route for
-/// [_i7.CartDetail]
-class CartDetail extends _i8.PageRouteInfo<CartDetailArgs> {
-  CartDetail({_i9.Key? key, Map<String, dynamic>? data})
-      : super(CartDetail.name,
-            path: '/cart-detail', args: CartDetailArgs(key: key, data: data));
-
-  static const String name = 'CartDetail';
-}
-
-class CartDetailArgs {
-  const CartDetailArgs({this.key, this.data});
-
-  final _i9.Key? key;
-
-  final Map<String, dynamic>? data;
-
-  @override
-  String toString() {
-    return 'CartDetailArgs{key: $key, data: $data}';
-  }
+  int get hashCode =>
+      key.hashCode ^ const MapEquality<String, dynamic>().hash(receiptData);
 }

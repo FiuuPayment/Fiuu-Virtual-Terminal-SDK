@@ -80,10 +80,14 @@ class BlankRouteArgs {
 /// generated route for
 /// [Cart]
 class CartRoute extends PageRouteInfo<CartRouteArgs> {
-  CartRoute({Key? key, required String country, List<PageRouteInfo>? children})
-      : super(
+  CartRoute({
+    Key? key,
+    required String country,
+    String orderId = '',
+    List<PageRouteInfo>? children,
+  }) : super(
           CartRoute.name,
-          args: CartRouteArgs(key: key, country: country),
+          args: CartRouteArgs(key: key, country: country, orderId: orderId),
           initialChildren: children,
         );
 
@@ -93,32 +97,36 @@ class CartRoute extends PageRouteInfo<CartRouteArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<CartRouteArgs>();
-      return Cart(key: args.key, country: args.country);
+      return Cart(key: args.key, country: args.country, orderId: args.orderId);
     },
   );
 }
 
 class CartRouteArgs {
-  const CartRouteArgs({this.key, required this.country});
+  const CartRouteArgs({this.key, required this.country, this.orderId = ''});
 
   final Key? key;
 
   final String country;
 
+  final String orderId;
+
   @override
   String toString() {
-    return 'CartRouteArgs{key: $key, country: $country}';
+    return 'CartRouteArgs{key: $key, country: $country, orderId: $orderId}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! CartRouteArgs) return false;
-    return key == other.key && country == other.country;
+    return key == other.key &&
+        country == other.country &&
+        orderId == other.orderId;
   }
 
   @override
-  int get hashCode => key.hashCode ^ country.hashCode;
+  int get hashCode => key.hashCode ^ country.hashCode ^ orderId.hashCode;
 }
 
 /// generated route for

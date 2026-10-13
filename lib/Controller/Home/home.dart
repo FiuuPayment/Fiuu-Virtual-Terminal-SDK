@@ -85,7 +85,10 @@ class _HomeState extends State<Home> {
 
     if (selectedCountry != null) {
       debugPrint("logCountry home selectedCountry = " + selectedCountry);
-      context.router.push(CartRoute(country: selectedCountry));
+      context.router.push(CartRoute(
+        country: selectedCountry,
+        orderId: _orderIdController.text.trim(),
+      ));
     }
   }
 

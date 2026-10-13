@@ -10,7 +10,11 @@ const double _minAmount = 1.01;
 class Cart extends StatefulWidget {
   final String country;
 
-  const Cart({Key? key, required this.country}) : super(key: key);
+  /// Custom order ID for the sale. A generated one is used when empty.
+  final String orderId;
+
+  const Cart({Key? key, required this.country, this.orderId = ''})
+      : super(key: key);
 
   @override
   _CartState createState() => _CartState();
@@ -167,7 +171,9 @@ class _CartState extends State<Cart> {
         'opType': data['opType'].toString(),
         'currency': currency,
         'amount': _amountController.text,
-        'orderId': 'DT${DateTime.now().millisecondsSinceEpoch.toString()}',
+        'orderId': widget.orderId.isNotEmpty
+            ? widget.orderId
+            : 'DT${DateTime.now().millisecondsSinceEpoch.toString()}',
         'channel': data['channel'].toString(),
         'payType': _payType
       }),
